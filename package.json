@@ -1,0 +1,20 @@
+{
+  "name": "cuedesk",
+  "version": "0.1.0",
+  "description": "Local Vue SRT review desk with optional video and reviewer notes",
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node --test test.mjs",
+    "test:browser": "node browser-test.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.65.1",
+    "@vue/compiler-sfc": "^3.5.46",
+    "esbuild": "^0.28.2",
+    "vue": "^3.5.46"
+  },
+  "type": "module"
+}
