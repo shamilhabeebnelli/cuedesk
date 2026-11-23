@@ -1,0 +1,10 @@
+import {parse,compileScript} from '@vue/compiler-sfc';
+import {build} from 'esbuild';
+import {readFileSync,writeFileSync} from 'node:fs';
+const {descriptor}=parse(readFileSync('App.vue','utf8'));
+const compiled=compileScript(descriptor,{id:'cuedesk',inlineTemplate:true});
+writeFileSync('.component.js',compiled.content);
+const result=await build({stdin:{contents:"import App from './.component.js'; import {createApp} from 'vue'; createApp(App).mount('#app');",resolveDir:process.cwd()},bundle:true,write:false,minify:true,format:'iife',define:{__VUE_OPTIONS_API__:'false',__VUE_PROD_DEVTOOLS__:'false',__VUE_PROD_HYDRATION_MISMATCH_DETAILS__:'false'},conditions:['browser'],platform:'browser'});
+const notice='<!--\n'+readFileSync('LICENSE','utf8')+'\n'+readFileSync('THIRD_PARTY.md','utf8').replaceAll('--','- -')+'\n-->\n';
+writeFileSync('cuedesk.html',notice+`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; media-src blob:; img-src data: blob:; connect-src 'none'; base-uri 'none'; form-action 'none'"><title>CueDesk | Local subtitle review</title><style>${descriptor.styles.map(s=>s.content).join('\n')}</style></head><body><div id="app"></div><script>${result.outputFiles[0].text.replace(/<\/script/gi,'<\\/script')}</script></body></html>`);
+console.log('Built cuedesk.html',readFileSync('cuedesk.html').length,'bytes');
